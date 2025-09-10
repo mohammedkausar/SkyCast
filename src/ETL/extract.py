@@ -53,7 +53,7 @@ class ExtractCities:
             "unit":"metric"
         }
 
-        city_df = city_df[city_df["name"].isin(self.selected_cities)]
+        city_df = city_df[city_df["name"].str.lower().isin(map(str.lower,self.selected_cities))]
         for row in city_df.itertuples(index=False):
             attempt =0
             success = False
