@@ -1,7 +1,22 @@
 {
-  "BASE_URL": "https://api.openweathermap.org/data/2.5/",
+  "BASE_URL": "https://api.openweathermap.org/data/2.5",
   "END_POINTS": {
-    "WEATHER": "weather"
+    "WEATHER": "/weather"
   },
-  "DEFAULT_CITY": "chennai"
+  "TOP_CITIES" : ["Delhi",
+                  "Mumbai",
+                  "Bangalore",
+                  "Hyderabad",
+                  "Chennai",
+                  "Kolkata",
+                  "Pune",
+                  "Ahmedabad",
+                  "Jaipur",
+                  "Lucknow"],
+  "S3": {
+    "SKYCAST-BUCKET":{
+      "NAME":"skycast-weather-report",
+      "KEY": "reference/dim_city.parquet"
+    }
+  }
 }
