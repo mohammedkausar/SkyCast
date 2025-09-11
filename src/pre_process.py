@@ -4,7 +4,7 @@ import os
 pd.set_option('display.width', None)
 try:
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file_path = os.path.join(BASE_DIR, "raw","current.city.list.json")
+    file_path = os.path.join(BASE_DIR, "staging","raw","current.city.list.json")
     city_df = pd.read_json(file_path)
     selected_city_df = city_df[["id","name","coord","country"]]
     indian_cities = selected_city_df.query("country == 'IN'").copy()

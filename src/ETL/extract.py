@@ -9,6 +9,8 @@ import requests
 from dotenv import load_dotenv
 from pandas import DataFrame
 
+from src.pre_process import file_path, BASE_DIR
+
 load_dotenv()
 
 class ExtractCities:
@@ -25,6 +27,7 @@ class ExtractCities:
     def __init__(self):
         self.base_url = self.config["BASE_URL"]
         self.weather_end_point = self.config["END_POINTS"]["WEATHER"]
+        self.api_v = self.config["URL_VERSION"]["WEATHER_V"]
         self.MAX_TRIES = 3
         self.RETRY_DELAY = 5
 
@@ -34,7 +37,7 @@ class ExtractCities:
         try:
             s3 = boto3.client("s3")
             bucket = cls.config["S3"]["SKYCAST-BUCKET"]["NAME"]
-            key = cls.config["S3"]["SKYCAST-BUCKET"]["KEY"]
+            key = cls.config["S3"]["SKYCAST-BUCKET"]["KEYS"][0]
 
             dim_city_obj = s3.get_object(Bucket=bucket, Key=key)
             df = pd.read_parquet(io.BytesIO(dim_city_obj["Body"].read()))
@@ -50,7 +53,7 @@ class ExtractCities:
         results=[]
         base_params = {
             "appid": os.getenv("OPENWEATHER_API_KEY"),
-            "unit":"metric"
+            "units":"metric"
         }
 
         city_df = city_df[city_df["name"].str.lower().isin(map(str.lower,self.selected_cities))]
@@ -63,7 +66,7 @@ class ExtractCities:
             params.update({"lat":lat,"lon":lon})
             while attempt < self.MAX_TRIES and not success:
                 try:
-                    response = requests.get(f"{self.base_url}/{self.weather_end_point}",params=params)
+                    response = requests.get(f"{self.base_url}/{self.api_v}/{self.weather_end_point}",params=params)
 
                     weather_data = response.json()
                     results.append(weather_data)
@@ -75,4 +78,20 @@ class ExtractCities:
                         time.sleep(self.RETRY_DELAY)
                     else:
                         print(f"Failed to fetch data for {row.id} after {self.MAX_TRIES} attempts" )
-        return  results
+        if not results:
+            print("No data to process")
+        else:
+            file = os.path.join(BASE_DIR,"staging","raw","raw_weather_data.parquet")
+            raw_data_df = pd.DataFrame(results)
+            raw_data_df.to_parquet(file, engine="pyarrow")
+
+            try:
+                s3 = boto3.client("s3")
+                bucket = self.__class__.config["S3"]["SKYCAST-BUCKET"]["NAME"]
+                key = self.__class__.config["S3"]["SKYCAST-BUCKET"]["KEYS"][1]
+
+                s3.upload_file(file,bucket,key)
+            except Exception as e:
+                print(f"Error uploading file {str(e)}")
+
+

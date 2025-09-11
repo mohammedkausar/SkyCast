@@ -1,7 +1,12 @@
 {
-  "BASE_URL": "https://api.openweathermap.org/data/2.5",
+  "BASE_URL": "https://api.openweathermap.org/data/",
+   "URL_VERSION": {
+    "ONE_CALL_V": "3.0",
+    "WEATHER_V": "2.5"
+  },
   "END_POINTS": {
-    "WEATHER": "/weather"
+    "WEATHER": "/weather",
+    "ONE_CALL" :"/onecall"
   },
   "TOP_CITIES" : ["Delhi",
                   "Mumbai",
@@ -16,7 +21,8 @@
   "S3": {
     "SKYCAST-BUCKET":{
       "NAME":"skycast-weather-report",
-      "KEY": "reference/dim_city.parquet"
+      "DISCLAIMER FOR KEYS": "Maintain the index order of the KEYS list",
+      "KEYS": ["reference/dim_city.parquet","staging/raw_weather_data.parquet"]
     }
   }
 }
