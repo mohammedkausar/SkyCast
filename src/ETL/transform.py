@@ -19,7 +19,7 @@ class TransformCities:
         except Exception as e:
             print(f"Error in fetchin requested data {str(e)}")
 
-    #private method to flatten thr nested data from data frame
+    #private method to flatten the nested data from data frame
     @staticmethod
     def _flatten_data_frame(df: pd.DataFrame)->pd.DataFrame:
         try:
@@ -38,7 +38,7 @@ class TransformCities:
         except Exception as e:
             print(f"Unable to flatten data: {str(e)}")
 
-    #wrapper method to fetch ad flatten the raw staged data
+    #wrapper method to fetch and flatten the raw staged data
     def transform_data(self):
         try:
             data_to_transform = self._fetch_staged_data()
