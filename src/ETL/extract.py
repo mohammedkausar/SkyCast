@@ -1,15 +1,11 @@
 import os
-import json
 import io
 import time
-
 import boto3
 import pandas as pd
 import requests
 from dotenv import load_dotenv
-from pandas import DataFrame
 
-from src.pre_process import file_path, BASE_DIR
 
 load_dotenv()
 
@@ -39,8 +35,9 @@ class ExtractCities:
         except Exception as e:
             print(f"Error fetching parquet from S3: {e}")
 
-    """Extract data from Openweather API with params"""
+
     def extract_data(self):
+        """Extract data from Openweather API with params"""
         city_df = self._city_from_parquet(self.bucket_name,self.key_name)
         results=[]
         base_params = {
