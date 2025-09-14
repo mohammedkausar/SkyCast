@@ -24,5 +24,9 @@
       "DISCLAIMER FOR KEYS": "Maintain the index order of the KEYS list",
       "KEYS": ["reference/dim_city.parquet","staging/raw_weather_data.parquet"]
     }
+  },
+  "RETRY": {
+    "MAX_TRIES": 3,
+    "RETRY_DELAY": 5
   }
 }

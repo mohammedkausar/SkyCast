@@ -1,25 +1,18 @@
 import json
-import os.path
-
-import pandas as pd
+import os
 
 from src.ETL.extract import ExtractCities
+from src.ETL.transform import TransformCities
+from src.ETL.stage import StageCities
 
-from src.ETL.transform import  TransformCities
+# your helper to read config
 
-# ec = ExtractCities()
-# df = ec.city_from_parquet()
-#
-# df1 = ec.extract_data(df)
-# df2 = pd.DataFrame(df1)
-#
-base = os.path.dirname(os.path.abspath(__file__))
-# file = os.path.join(base,"staging","raw","raw_weather_data.parquet")
-#
-# df = pd.read_parquet(file)
-# print(df.count())
-file = json.load(open(os.path.join(base,"config","config.json")))
-tc= TransformCities(file)
+def run_pipeline(config):
+    ExtractCities(config).extract_data()
+    transformed = TransformCities(config).transform_data()
+    StageCities(config).upload_file_to_s3(transformed)
 
-df=tc.transform_data()
-print(df)
+if __name__ == "__main__":
+    base = os.path.dirname(os.path.abspath(__file__))
+    file = json.load(open(os.path.join(base, "config", "config.json")))
+    run_pipeline(file)
