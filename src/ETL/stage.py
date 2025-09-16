@@ -4,11 +4,12 @@ import pandas as pd
 
 
 class StageCities:
-    def __init__(self,config):
+    def __init__(self,config,from_transform = False):
         self.bucket_name = config["S3"]["SKYCAST-BUCKET"]["NAME"]
-        self.key_name = config["S3"]["SKYCAST-BUCKET"]["KEYS"][1]
+        self.key_name = config["S3"]["SKYCAST-BUCKET"]["KEYS"][2] if from_transform else config["S3"]["SKYCAST-BUCKET"]["KEYS"][1]
         self.base_dir = Path(__file__).resolve().parents[2]
-        self.local_staging_copy_path = Path(self.base_dir) / "staging" / "raw" / "raw_weather_data.parquet"
+        self.file_name ="flattened_weather_data.parquet" if from_transform else "raw_weather_data.parquet"
+        self.local_staging_copy_path = Path(self.base_dir) / "staging" / "raw" / self.file_name
         self.local_staging_copy_path.parent.mkdir(parents=True, exist_ok=True)
 
     #uploading the local staged file to the s3 bucket
