@@ -1,10 +1,11 @@
+import boto3
 import pandas as pd
 import os
 
 pd.set_option('display.width', None)
 try:
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file_path = os.path.join(BASE_DIR, "staging","raw","current.city.list.json")
+    file_path = os.path.join(BASE_DIR, "staging","raw","city.list.json")
     city_df = pd.read_json(file_path)
     selected_city_df = city_df[["id","name","coord","country"]]
     indian_cities = selected_city_df.query("country == 'IN'").copy()
@@ -12,5 +13,7 @@ try:
     indian_cities.drop(columns=["coord"], inplace=True)
     indian_cities.to_parquet(os.path.join(BASE_DIR,"reference","dim_city.parquet"))
     pq = pd.read_parquet(os.path.join(BASE_DIR,"reference","dim_city.parquet"))
+    s3 = boto3.client('s3')
+    s3.upload_file(os.path.join(BASE_DIR,"reference","dim_city.parquet"),"skycast-weather-report","reference/dim_city.parquet")
 except Exception as e:
     print(str(e))

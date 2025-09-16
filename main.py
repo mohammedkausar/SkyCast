@@ -1,6 +1,8 @@
 import json
 import os
 
+import pandas as pd
+
 from src.ETL.extract import ExtractCities
 from src.ETL.transform import TransformCities
 from src.ETL.stage import StageCities
@@ -8,9 +10,12 @@ from src.ETL.stage import StageCities
 # your helper to read config
 
 def run_pipeline(config):
-    ExtractCities(config).extract_data()
+    print("Extraction started")
+    extracted_data =ExtractCities(config).extract_data()
+    StageCities(config).upload_file_to_s3(extracted_data)
+    print("transformation started")
     transformed = TransformCities(config).transform_data()
-    StageCities(config).upload_file_to_s3(transformed)
+    # StageCities(config,True).upload_file_to_s3(transformed)
 
 if __name__ == "__main__":
     base = os.path.dirname(os.path.abspath(__file__))
