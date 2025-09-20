@@ -8,7 +8,7 @@ from src.ETL.transform import TransformCities
 from src.ETL.stage import StageCities
 
 # your helper to read config
-
+pd.set_option('display.width', None)
 def run_pipeline(config):
     print("Extraction started")
     extracted_data =ExtractCities(config).extract_data()

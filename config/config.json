@@ -23,6 +23,40 @@
     "BATCH_DELAY": 60
   },
   "COLUMNS": {
-    "FETCHED_AT": "fetched_at"
+    "FETCHED_AT": "fetched_at",
+    "FLATTENED_COLS": {
+      "BASE": "string",
+      "VISIBILITY": "Int64",
+      "DT": "datetime[ns,UTC]",
+      "TIMEZONE": "Int64",
+      "ID": "Int64",
+      "NAME": "string",
+      "COD": "Int64",
+      "FETCHED_AT": "datetime64[ns]",
+      "RAIN": "float64",
+      "COORD_LAT": "float64",
+      "COORD_LON": "float64",
+      "MAIN_FEELS_LIKE": "float64",
+      "MAIN_GRND_LEVEL": "Int64",
+      "MAIN_HUMIDITY": "Int64",
+      "MAIN_PRESSURE": "Int64",
+      "MAIN_SEA_LEVEL": "Int64",
+      "MAIN_TEMP": "float64",
+      "MAIN_TEMP_MAX": "float64",
+      "MAIN_TEMP_MIN": "float64",
+      "WIND_DEG": "Int64",
+      "WIND_GUST": "float64",
+      "WIND_SPEED": "float64",
+      "CLOUDS_ALL": "Int64",
+      "SYS_COUNTRY": "string",
+      "SYS_SUNRISE": "datetime[ns,UTC]",
+      "SYS_SUNSET": "datetime[ns,UTC]",
+      "RAIN_1H": "float64",
+      "WEATHER_DESCRIPTION": "string",
+      "WEATHER_ICON": "string",
+      "WEATHER_ID": "Int64",
+      "WEATHER_MAIN": "string"
+    }
+
   }
 }

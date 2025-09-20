@@ -2,6 +2,7 @@ import io
 import boto3
 import pandas as pd
 import json
+from utils.convert_dtype import DtypeConversion
 
 
 class TransformCities:
@@ -38,9 +39,6 @@ class TransformCities:
             return normalise_df
         except Exception as e:
             print(f"Unable to flatten data: {str(e)}")
-    @staticmethod
-    def _convert_data_type(df: pd.DataFrame):
-        print(df.head())
 
 
     #wrapper method to fetch and flatten the raw staged data
@@ -48,7 +46,10 @@ class TransformCities:
         try:
             data_to_transform = self._fetch_staged_data()
             transformed_data = self._flatten_data_frame(data_to_transform)
-            # optimised_type_data = self._convert_data_type(transformed_data)
-            return transformed_data
+            print(transformed_data.head())
+            convert_type = DtypeConversion()
+            optimised_type_data = convert_type.type_convert(transformed_data)
+            print(optimised_type_data.dtypes)
+            # return transformed_data
         except Exception as e:
             print(f"Unable to transform data: {str(e)}")
