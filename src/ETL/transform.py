@@ -9,6 +9,7 @@ class TransformCities:
     def __init__(self,config):
         self.bucket_name = config["S3"]["SKYCAST-BUCKET"]["NAME"]
         self.bucket_key = config["S3"]["SKYCAST-BUCKET"]["KEYS"][1]
+        self.schema_type = config["COLUMNS"]["FLATTENED_COLS"]
 
     #private method to fetch the data from s3 bucket
     def _fetch_staged_data(self):
@@ -46,10 +47,8 @@ class TransformCities:
         try:
             data_to_transform = self._fetch_staged_data()
             transformed_data = self._flatten_data_frame(data_to_transform)
-            print(transformed_data.head())
             convert_type = DtypeConversion()
-            optimised_type_data = convert_type.type_convert(transformed_data)
-            print(optimised_type_data.dtypes)
-            # return transformed_data
+            optimised_type_data = convert_type.type_convert(transformed_data,self.schema_type)
+            return optimised_type_data
         except Exception as e:
             print(f"Unable to transform data: {str(e)}")

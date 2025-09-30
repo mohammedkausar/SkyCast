@@ -12,10 +12,13 @@ pd.set_option('display.width', None)
 def run_pipeline(config):
     print("Extraction started")
     extracted_data =ExtractCities(config).extract_data()
-    StageCities(config).upload_file_to_s3(extracted_data)
+    StageCities(config,'raw').upload_file_to_s3(extracted_data)
     print("transformation started")
     transformed = TransformCities(config).transform_data()
-    # StageCities(config,True).upload_file_to_s3(transformed)
+    print(transformed)
+    print("Staging the optimised type data in S3")
+    cdc = max(transformed['dt'])
+    # StageCities(config,"complete",cdc).upload_file_to_s3(transformed)
 
 if __name__ == "__main__":
     base = os.path.dirname(os.path.abspath(__file__))

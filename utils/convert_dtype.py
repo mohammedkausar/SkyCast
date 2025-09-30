@@ -3,36 +3,30 @@ from pandas import DataFrame
 
 
 class DtypeConversion:
-    def type_convert(self,df:DataFrame):
+    def type_convert(self,df:DataFrame,schema:dict):
         pd.set_option('display.width', None)
         try:
-            df=df.convert_dtypes()
-            # for col in df.columns:
-            #     dt = pd.to_datetime(df[col],errors='coerce',unit="s",utc=True)
-            #     if dt.notna().mean() > 0.8:
-            #         # print(dt)
-            #         df[col] = dt
-            #         continue
-            #
-            #     dt2 = pd.to_datetime(df[col], errors='coerce',format='%Y-%m-%d %H:%M:%S')
-            #     if dt2.notna().mean() > 0.8:
-            #         df[col] = dt2
-            #         continue
-                # print(dt)
-                # print("+++++++++++++++++++++++++++")
-                # print(dt2)
-                # dt_num_float = pd.to_numeric(df[col], errors='coerce')
-                # if dt_num_float.notna().mean() > 0.8:
-                #     if(dt_num_float.dropna() % 1 == 0).all():
-                #         df[col] = dt_num_float.astype("Int64")
-                #     else:
-                #         df[col] = dt_num_float.astype("float64")
-                #     continue
-                #
-                #
-                #
-                # df[col] = df[col].astype("string")
-            print(df.dtypes)
+            df.columns = map(str.upper,df.columns)
+            for col,target_type in schema.items():
+                if col not in df.columns:
+                    continue
+
+                if target_type == "Int64":
+                    df[col] = df[col].astype("Int64")
+
+                if target_type == "string":
+                    df[col] = df[col].astype("string")
+
+                if target_type=="float64":
+                    df[col] = df[col].astype("float64")
+
+                if target_type == "datetime64[ns,UTC]":
+                    df[col] = pd.to_datetime(df[col],errors='coerce',utc=True, unit="s")
+
+                if df[col].dtypes not in ["Int64","float64","string","datetime[ns,UTC]"]:
+                    df[col] = df[col].astype("string")
+
+            df.columns = map(str.lower,df.columns)
             return df
 
         except Exception as e:
