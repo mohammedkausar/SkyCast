@@ -1,0 +1,29 @@
+name: Deploy to EC2
+
+# Trigger on push to main branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            mkdir -p ~/SkyCast
+            cd ~/SkyCast
+            rm -rf *   # clear old code
+            git clone git@github.com:mohammedkausar/SkyCast.git .
+            echo "Deployment complete!"
