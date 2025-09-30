@@ -39,6 +39,7 @@ class DdlActions:
             print(f"Cannot create table: {str(e)}")
 
 
-
+    def test_method(self):
+        pass
 
 
