@@ -1,7 +1,7 @@
 import json
 import os.path
-
-from numpy.f2py.crackfortran import crackline
+import psycopg2
+from db_connect import get_config
 
 
 class DdlActions:
@@ -33,13 +33,18 @@ class DdlActions:
         try:
             cols = self.map_schema()
             create_table_query = ""
+            cfg = get_config()
             if cols:
                 create_table_query += f"CREATE TABLE IF NOT EXISTS {self.raw_table} ({cols})"
+                with psycopg2.connect(**cfg) as conn:
+                    with conn.cursor() as cur:
+                        cur.execute(create_table_query)
         except Exception as e:
             print(f"Cannot create table: {str(e)}")
 
 
-    def test_method(self):
-        pass
 
-
+base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+file = json.load(open(os.path.join(base, "config", "config.json")))
+cd = DdlActions(file)
+cd.create_denormalized_table()
