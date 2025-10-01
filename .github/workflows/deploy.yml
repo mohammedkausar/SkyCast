@@ -24,6 +24,16 @@ jobs:
           script: |
             mkdir -p ~/SkyCast
             cd ~/SkyCast
-            rm -rf *   # clear old code
-            git clone git@github.com:mohammedkausar/SkyCast.git .
+            # Safe deploy: pull if repo exists, else clone
+            if [ -d .git ]; then
+              echo "Repo exists, pulling latest changes..."
+              git reset --hard
+              git clean -fd
+              git pull origin main
+            else
+              echo "Repo does not exist, cloning..."
+              git clone git@github.com:mohammedkausar/SkyCast.git .
+            fi
+
             echo "Deployment complete!"
+
