@@ -82,10 +82,10 @@ class ExtractCities:
                 return weather_data
             except Exception as e:
                 attempt +=1
-                print(f"Attempt {attempt} failed for {city["id"]} : {str(e)}")
+                print(f"Attempt {attempt} failed for {city['id']} : {str(e)}")
                 if attempt < self.MAX_TRIES:
                     time.sleep(self.RETRY_DELAY)
                 else:
-                    print(f"Failed to fetch data for {city["id"]} after {self.MAX_TRIES} attempts" )
+                    print(f"Failed to fetch data for {city['id']} after {self.MAX_TRIES} attempts" )
         return None
 
