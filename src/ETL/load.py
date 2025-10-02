@@ -3,6 +3,8 @@ import io
 import boto3
 import pandas as pd
 import psycopg2
+from psycopg2.extras import execute_values
+
 from utils.data_cleaner import CleanData
 from utils import db_connect
 
@@ -37,13 +39,17 @@ class LoadCities:
             self.cdc = cdc
             data_to_load = self._fetch_raw_data_from_parquet()
             if data_to_load is not None and not data_to_load.empty:
-                cols = list(data_to_load.columns)
-                buffer = io.StringIO()
-                data_to_load.to_csv(buffer, index=False, header=False , na_rep='\\N')
-                buffer.seek(0)
+                # cols = list(data_to_load.columns)
+                # buffer = io.StringIO()
+                # data_to_load.to_csv(buffer, index=False, header=False , na_rep='\\N')
+                # buffer.seek(0)
                 with psycopg2.connect(**self.cfg) as conn:
                     with conn.cursor() as cur:
-                        cur.copy_from(buffer, table=self.raw_table, sep=",", columns=cols, null='\\N')
+                        tuples = [tuple(x) for x in data_to_load.to_numpy()]
+                        cols = ','.join(data_to_load.columns)
+                        query = f"INSERT INTO {self.raw_table} ({cols}) VALUES %s"
+                        execute_values(cur, query, tuples)
+                        # cur.copy_from(buffer, table=self.raw_table, sep=",", columns=cols, null='\\N')
         except Exception as e:
             print(f"Error while loading data to raw table: {str(e)}")
             raise e
