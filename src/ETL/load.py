@@ -12,7 +12,7 @@ class LoadCities:
         self.bucket_key = config["S3"]["SKYCAST-BUCKET"]["KEYS"][2]
         self.cfg = db_connect.get_config()
         self.cdc = None
-        self.schema = config["TO_SQL_COLUMNS"]
+        self.schema = config["COLUMNS"]["TO_SQL_COLUMNS"]
         self.raw_table = config["TABLES"]["WEATHER_RAW"]
 
     def _fetch_raw_data_from_parquet(self):
