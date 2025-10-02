@@ -35,7 +35,7 @@ class ExtractCities:
             s3 = boto3.client("s3")
             dim_city_obj = s3.get_object(Bucket=bucket_name, Key=key_name)
             df = pd.read_parquet(io.BytesIO(dim_city_obj["Body"].read()))
-            return df.head(10)
+            return df.head(30)
 
         except Exception as e:
             print(f"Error fetching parquet from S3: {e}")
