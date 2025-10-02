@@ -43,17 +43,23 @@ class ExtractCities:
 
     def extract_data(self):
         batch_weather_data =[]
-        city_df = self._city_from_parquet(self.bucket_name,self.key_name)
-        city_list= city_df.to_dict(orient="records")
-        for i in range(0,len(city_list),self.batch_delay):
-            batch =city_list[i:i+self.batch_delay]
-            for city in batch:
-                data=self._fetch_weather(city)
-                batch_weather_data.append(data)
-        if batch_weather_data:
-            batch_weather_data=pd.DataFrame(batch_weather_data)
-            return batch_weather_data
-        return None
+        try:
+            city_df = self._city_from_parquet(self.bucket_name,self.key_name)
+            if not city_df.empty:
+                city_list= city_df.to_dict(orient="records")
+                for i in range(0,len(city_list),self.batch_delay):
+                    batch =city_list[i:i+self.batch_delay]
+                    for city in batch:
+                        data=self._fetch_weather(city)
+                        batch_weather_data.append(data)
+                if batch_weather_data:
+                    batch_weather_data=pd.DataFrame(batch_weather_data)
+                    return batch_weather_data
+                return None
+            return None
+        except Exception as e:
+            print(f"Error while extraction: {str(e)}")
+            raise e
         #city_df = city_df[city_df["name"].str.lower().fillna("").isin(map(str.lower,self.selected_cities))]
 
 
