@@ -43,7 +43,7 @@ class LoadCities:
                 buffer.seek(0)
                 with psycopg2.connect(**self.cfg) as conn:
                     with conn.cursor() as cur:
-                        cur.copy_from(buffer, table=self.raw_table, sep=",", columns=cols)
+                        cur.copy_from(buffer, table=self.raw_table, sep=",", columns=cols, null='\\N')
         except Exception as e:
             print(f"Error while loading data to raw table: {str(e)}")
             raise e
