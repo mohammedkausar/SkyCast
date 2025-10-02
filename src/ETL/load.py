@@ -39,7 +39,7 @@ class LoadCities:
             if data_to_load is not None and not data_to_load.empty:
                 cols = list(data_to_load.columns)
                 buffer = io.StringIO()
-                data_to_load.to_csv(buffer, index=False, header=False)
+                data_to_load.to_csv(buffer, index=False, header=False , na_rep='\\N')
                 buffer.seek(0)
                 with psycopg2.connect(**self.cfg) as conn:
                     with conn.cursor() as cur:
