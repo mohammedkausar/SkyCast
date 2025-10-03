@@ -25,3 +25,13 @@ if __name__ == "__main__":
     base = os.path.dirname(os.path.abspath(__file__))
     file = json.load(open(os.path.join(base, "config", "config.json")))
     run_pipeline(file)
+
+def lambda_handler(event, context):
+    try:
+        base_for_lambda = os.path.dirname(os.path.abspath(__file__))
+        file_for_lambda = json.load(open(os.path.join(base_for_lambda, "config", "config.json")))
+        run_pipeline(file_for_lambda)
+        return {"status": "success"}
+    except Exception as e:
+        print(f"Error while invoking lambda: {str(e)}")
+        raise e
