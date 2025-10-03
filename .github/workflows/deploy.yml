@@ -46,12 +46,18 @@ jobs:
           cd ..
           zip -r function.zip main.py src config utils staging
 
+      # 6️⃣ Upload zip to S3
+      - name: Upload Lambda zip to S3
+        run: |
+          aws s3 cp function.zip s3://skycast-weather-report/zip_lambda_skycast/function.zip
+
       # 6️⃣ Deploy to Lambda
       - name: Update Lambda code
         run: |
           aws lambda update-function-code \
             --function-name skycast_pipeline \
-            --zip-file fileb://function.zip
+            --s3-bucket skycast-weather-report/zip_lambda_skycast \
+            --s3-key function.zip
 
       # 7️⃣ Update Lambda configuration (VPC + env vars)
       - name: Update Lambda configuration
@@ -59,3 +65,7 @@ jobs:
           aws lambda update-function-configuration \
             --function-name skycast_pipeline \
             --vpc-config SubnetIds=subnet-0c92adc5d46412cb8,subnet-0c2043de6bf9ff9e5,subnet-014c7024b338e99cc,SecurityGroupIds=sg-0e81361efce8250bf \
+          
+          
+          
+          
