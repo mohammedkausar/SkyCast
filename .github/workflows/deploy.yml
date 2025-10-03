@@ -1,4 +1,4 @@
-name: Deploy to EC2
+name: Deploy Lambda
 
 # Trigger on push to main branch
 on:
@@ -6,34 +6,56 @@ on:
     branches:
       - main
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout your code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to EC2 via SSH
-        uses: appleboy/ssh-action@v1
+      # 2️⃣ Configure AWS credentials via GitHub OIDC
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          script: |
-            mkdir -p ~/SkyCast
-            cd ~/SkyCast
-            # Safe deploy: pull if repo exists, else clone
-            if [ -d .git ]; then
-              echo "Repo exists, pulling latest changes..."
-              git reset --hard
-              git clean -fd
-              git pull origin main
-            else
-              echo "Repo does not exist, cloning..."
-              git clone git@github.com:mohammedkausar/SkyCast.git .
-            fi
+          role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/<YOUR_OIDC_ROLE_NAME>
+          aws-region: ap-south-1  # replace with your region
 
-            echo "Deployment complete!"
+      # 3️⃣ Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
 
+      # 4️⃣ Install dependencies into package folder
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -t ./package/
+
+      # 5️⃣ Package Lambda (dependencies + main.py)
+      - name: Package Lambda
+        run: |
+          cd package
+          zip -r ../function.zip .
+          cd ..
+          zip -r function.zip main.py src config utils staging
+
+      # 6️⃣ Deploy to Lambda
+      - name: Update Lambda code
+        run: |
+          aws lambda update-function-code \
+            --function-name skycast_pipeline \
+            --zip-file fileb://function.zip
+
+      # 7️⃣ Update Lambda configuration (VPC + env vars)
+      - name: Update Lambda configuration
+        run: |
+          aws lambda update-function-configuration \
+            --function-name skycast_pipeline \
+            --vpc-config SubnetIds=subnet-0c92adc5d46412cb8,subnet-0c2043de6bf9ff9e5,subnet-014c7024b338e99cc,SecurityGroupIds=sg-0e81361efce8250bf \
