@@ -56,8 +56,8 @@ jobs:
         run: |
           aws lambda update-function-code \
             --function-name skycast_pipeline \
-            --s3-bucket skycast-weather-report/zip_lambda_skycast \
-            --s3-key function.zip
+            --s3-bucket skycast-weather-report \
+            --s3-key zip_lambda_skycast/function.zip
 
       # 7️⃣ Update Lambda configuration (VPC + env vars)
       - name: Update Lambda configuration
