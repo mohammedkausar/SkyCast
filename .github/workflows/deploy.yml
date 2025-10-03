@@ -23,7 +23,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/<YOUR_OIDC_ROLE_NAME>
+          role-to-assume: arn:aws:iam::874227493027:role/Github_OIDC_Connect
           aws-region: ap-south-1  # replace with your region
 
       # 3️⃣ Set up Python
