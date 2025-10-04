@@ -11,12 +11,6 @@ on:
       - "utils/db_connect.py"
       - "utils/ddl_actions.py"
       - ".github/workflows/deploy_load.yml"
-    paths-ignore:
-      - "main.py"
-      - "src/ETL/**"        # everything else
-      - "utils/**"          # only load-related utils are included
-      - "staging/**"
-      - ".github/workflows/deploy_extract_transform.yml"
 
 permissions:
   id-token: write
