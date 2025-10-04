@@ -52,7 +52,7 @@ jobs:
           zip -r ../load_function.zip .
           cd ..
           # Add only load-related code
-          zip -g load_function.zip lambda_load.py src/ETL/load.py utils/db_connect.py utils/data_cleaner.py utils/ddl_actions.py config\
+          zip -r load_function.zip lambda_load.py src/ETL/load.py utils/db_connect.py utils/data_cleaner.py utils/ddl_actions.py config\
             -x ".github/workflows/deploy_extract_transform.yml" \
             -x "main.py" \
             -x "src/ETL/!(load.py)" \
