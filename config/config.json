@@ -1,97 +1,195 @@
 {
-  "BASE_URL": "https://api.openweathermap.org/data/",
-  "BATCH_SIZE": 100,
-   "URL_VERSION": {
-    "ONE_CALL_V": "3.0",
-    "WEATHER_V": "2.5"
-  },
-  "END_POINTS": {
-    "WEATHER": "/weather",
-    "ONE_CALL" :"/onecall"
-  },
-
-  "S3": {
-    "SKYCAST-BUCKET":{
-      "NAME":"skycast-weather-report",
-      "DISCLAIMER FOR KEYS": "Maintain the index order of the KEYS list",
-      "KEYS": ["reference/dim_city.parquet","staging/raw_weather_data.parquet","staging/weather_data.parquet"]
-    }
-  },
-  "SLEEP": {
-    "MAX_TRIES": 3,
-    "RETRY_DELAY": 5,
-    "BATCH_DELAY": 60
-  },
-  "COLUMNS": {
-    "FETCHED_AT": "fetched_at",
-    "FLATTENED_COLS": {
-      "BASE": "string",
-      "VISIBILITY": "Int64",
-      "DT": "datetime64[ns,UTC]",
-      "TIMEZONE": "Int64",
-      "ID": "Int64",
-      "NAME": "string",
-      "COD": "Int64",
-      "FETCHED_AT": "datetime64[ns]",
-      "RAIN": "float64",
-      "COORD_LAT": "float64",
-      "COORD_LON": "float64",
-      "MAIN_FEELS_LIKE": "float64",
-      "MAIN_GRND_LEVEL": "Int64",
-      "MAIN_HUMIDITY": "Int64",
-      "MAIN_PRESSURE": "Int64",
-      "MAIN_SEA_LEVEL": "Int64",
-      "MAIN_TEMP": "float64",
-      "MAIN_TEMP_MAX": "float64",
-      "MAIN_TEMP_MIN": "float64",
-      "WIND_DEG": "Int64",
-      "WIND_GUST": "float64",
-      "WIND_SPEED": "float64",
-      "CLOUDS_ALL": "Int64",
-      "SYS_COUNTRY": "string",
-      "SYS_SUNRISE": "datetime64[ns,UTC]",
-      "SYS_SUNSET": "datetime64[ns,UTC]",
-      "RAIN_1H": "float64",
-      "WEATHER_DESCRIPTION": "string",
-      "WEATHER_ICON": "string",
-      "WEATHER_ID": "Int64",
-      "WEATHER_MAIN": "string"
+    "BASE_URL": "https://api.openweathermap.org/data/",
+    "BATCH_SIZE": 100,
+    "URL_VERSION": {
+        "ONE_CALL_V": "3.0",
+        "WEATHER_V": "2.5"
     },
-    "TO_SQL_COLUMNS": {
-      "BASE": {"type": "TEXT", "nullable": true},
-      "VISIBILITY": {"type": "BIGINT", "nullable": true},
-      "DT": {"type": "TIMESTAMPTZ", "nullable": false},
-      "TIMEZONE": {"type": "BIGINT", "nullable": true},
-      "ID": {"type": "SERIAL", "nullable": false, "primary_key": true},
-      "NAME": {"type": "TEXT", "nullable": true},
-      "COD": {"type": "BIGINT", "nullable": true},
-      "FETCHED_AT": {"type": "TIMESTAMP", "nullable": false},
-      "RAIN": {"type": "DOUBLE PRECISION", "nullable": true},
-      "COORD_LAT": {"type": "DOUBLE PRECISION", "nullable": true},
-      "COORD_LON": {"type": "DOUBLE PRECISION", "nullable": true},
-      "MAIN_FEELS_LIKE": {"type": "DOUBLE PRECISION", "nullable": true},
-      "MAIN_GRND_LEVEL": {"type": "BIGINT", "nullable": true},
-      "MAIN_HUMIDITY": {"type": "BIGINT", "nullable": true},
-      "MAIN_PRESSURE": {"type": "BIGINT", "nullable": true},
-      "MAIN_SEA_LEVEL": {"type": "BIGINT", "nullable": true},
-      "MAIN_TEMP": {"type": "DOUBLE PRECISION", "nullable": true},
-      "MAIN_TEMP_MAX": {"type": "DOUBLE PRECISION", "nullable": true},
-      "MAIN_TEMP_MIN": {"type": "DOUBLE PRECISION", "nullable": true},
-      "WIND_DEG": {"type": "BIGINT", "nullable": true},
-      "WIND_GUST": {"type": "DOUBLE PRECISION", "nullable": true},
-      "WIND_SPEED": {"type": "DOUBLE PRECISION", "nullable": true},
-      "CLOUDS_ALL": {"type": "BIGINT", "nullable": true},
-      "SYS_COUNTRY": {"type": "TEXT", "nullable": true},
-      "SYS_SUNRISE": {"type": "TIMESTAMPTZ", "nullable": true},
-      "SYS_SUNSET": {"type": "TIMESTAMPTZ", "nullable": true},
-      "RAIN_1H": {"type": "DOUBLE PRECISION", "nullable": true},
-      "WEATHER_DESCRIPTION": {"type": "TEXT", "nullable": true},
-      "WEATHER_ICON": {"type": "TEXT", "nullable": true},
-      "WEATHER_ID": {"type": "BIGINT", "nullable": true},
-      "WEATHER_MAIN": {"type": "TEXT", "nullable": true}
-    }
-  },
-  "TABLES": {
-    "WEATHER_RAW": "raw_weather"
-  }
+    "END_POINTS": {
+        "WEATHER": "/weather",
+        "ONE_CALL": "/onecall"
+    },
+    "S3": {
+        "SKYCAST-BUCKET": {
+            "NAME": "skycast-weather-report",
+            "DISCLAIMER FOR KEYS": "Maintain the index order of the KEYS list",
+            "KEYS": [
+                "reference/dim_city.parquet",
+                "staging/raw_weather_data.parquet",
+                "staging/weather_data.parquet"
+            ]
+        }
+    },
+    "SLEEP": {
+        "MAX_TRIES": 3,
+        "RETRY_DELAY": 5,
+        "BATCH_DELAY": 60
+    },
+    "COLUMNS": {
+        "FETCHED_AT": "fetched_at",
+        "FLATTENED_COLS": {
+            "BASE": "string",
+            "VISIBILITY": "Int64",
+            "DT": "datetime64[ns,UTC]",
+            "TIMEZONE": "Int64",
+            "ID": "Int64",
+            "NAME": "string",
+            "COD": "Int64",
+            "FETCHED_AT": "datetime64[ns]",
+            "RAIN": "float64",
+            "COORD_LAT": "float64",
+            "COORD_LON": "float64",
+            "MAIN_FEELS_LIKE": "float64",
+            "MAIN_GRND_LEVEL": "Int64",
+            "MAIN_HUMIDITY": "Int64",
+            "MAIN_PRESSURE": "Int64",
+            "MAIN_SEA_LEVEL": "Int64",
+            "MAIN_TEMP": "float64",
+            "MAIN_TEMP_MAX": "float64",
+            "MAIN_TEMP_MIN": "float64",
+            "WIND_DEG": "Int64",
+            "WIND_GUST": "float64",
+            "WIND_SPEED": "float64",
+            "CLOUDS_ALL": "Int64",
+            "SYS_COUNTRY": "string",
+            "SYS_SUNRISE": "datetime64[ns,UTC]",
+            "SYS_SUNSET": "datetime64[ns,UTC]",
+            "RAIN_1H": "float64",
+            "WEATHER_DESCRIPTION": "string",
+            "WEATHER_ICON": "string",
+            "WEATHER_ID": "Int64",
+            "WEATHER_MAIN": "string"
+        },
+        "TO_SQL_COLUMNS": {
+            "BASE": {
+                "type": "TEXT",
+                "nullable": true
+            },
+            "VISIBILITY": {
+                "type": "BIGINT",
+                "nullable": true
+            },
+            "DT": {
+                "type": "TIMESTAMPTZ",
+                "nullable": false
+            },
+            "TIMEZONE": {
+                "type": "BIGINT",
+                "nullable": true
+            },
+            "ID": {
+                "type": "SERIAL",
+                "nullable": false,
+                "primary_key": true
+            },
+            "NAME": {
+                "type": "TEXT",
+                "nullable": true
+            },
+            "COD": {
+                "type": "BIGINT",
+                "nullable": true
+            },
+            "FETCHED_AT": {
+                "type": "TIMESTAMP",
+                "nullable": false
+            },
+            "RAIN": {
+                "type": "DOUBLE PRECISION",
+                "nullable": true
+            },
+            "COORD_LAT": {
+                "type": "DOUBLE PRECISION",
+                "nullable": true
+            },
+            "COORD_LON": {
+                "type": "DOUBLE PRECISION",
+                "nullable": true
+            },
+            "MAIN_FEELS_LIKE": {
+                "type": "DOUBLE PRECISION",
+                "nullable": true
+            },
+            "MAIN_GRND_LEVEL": {
+                "type": "BIGINT",
+                "nullable": true
+            },
+            "MAIN_HUMIDITY": {
+                "type": "BIGINT",
+                "nullable": true
+            },
+            "MAIN_PRESSURE": {
+                "type": "BIGINT",
+                "nullable": true
+            },
+            "MAIN_SEA_LEVEL": {
+                "type": "BIGINT",
+                "nullable": true
+            },
+            "MAIN_TEMP": {
+                "type": "DOUBLE PRECISION",
+                "nullable": true
+            },
+            "MAIN_TEMP_MAX": {
+                "type": "DOUBLE PRECISION",
+                "nullable": true
+            },
+            "MAIN_TEMP_MIN": {
+                "type": "DOUBLE PRECISION",
+                "nullable": true
+            },
+            "WIND_DEG": {
+                "type": "BIGINT",
+                "nullable": true
+            },
+            "WIND_GUST": {
+                "type": "DOUBLE PRECISION",
+                "nullable": true
+            },
+            "WIND_SPEED": {
+                "type": "DOUBLE PRECISION",
+                "nullable": true
+            },
+            "CLOUDS_ALL": {
+                "type": "BIGINT",
+                "nullable": true
+            },
+            "SYS_COUNTRY": {
+                "type": "TEXT",
+                "nullable": true
+            },
+            "SYS_SUNRISE": {
+                "type": "TIMESTAMPTZ",
+                "nullable": true
+            },
+            "SYS_SUNSET": {
+                "type": "TIMESTAMPTZ",
+                "nullable": true
+            },
+            "RAIN_1H": {
+                "type": "DOUBLE PRECISION",
+                "nullable": true
+            },
+            "WEATHER_DESCRIPTION": {
+                "type": "TEXT",
+                "nullable": true
+            },
+            "WEATHER_ICON": {
+                "type": "TEXT",
+                "nullable": true
+            },
+            "WEATHER_ID": {
+                "type": "BIGINT",
+                "nullable": true
+            },
+            "WEATHER_MAIN": {
+                "type": "TEXT",
+                "nullable": true
+            }
+        }
+    },
+    "TABLES": {
+        "WEATHER_RAW": "raw_weather"
+    },
+    "CDC": "2025-10-04 10:38:47+00:00"
 }

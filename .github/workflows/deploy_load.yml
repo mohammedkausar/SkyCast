@@ -1,0 +1,99 @@
+name: Deploy Load Lambda (With Dependencies)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "lambda_load.py"
+      - "src/ETL/load.py"
+      - "utils/data_cleaner.py"
+      - "utils/db_connect.py"
+      - "utils/ddl_actions.py"
+      - ".github/workflows/deploy_load.yml"
+    paths-ignore:
+      - "main.py"
+      - "src/ETL/**"        # everything else
+      - "utils/**"          # only load-related utils are included
+      - "staging/**"
+      - ".github/workflows/deploy_extract_transform.yml"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-load:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2️⃣ Configure AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::874227493027:role/Github_OIDC_Connect
+          aws-region: ap-south-1
+
+      # 3️⃣ Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # 4️⃣ Install dependencies into package folder
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas psycopg2-binary requests numpy boto3 python-dotenv -t ./package/
+
+      # 5️⃣ Package Lambda (dependencies + load code)
+      - name: Package Load Lambda
+        run: |
+          # Include dependencies
+          cd package
+          zip -r ../load_function.zip .
+          cd ..
+          # Add only load-related code
+          zip -g load_function.zip lambda_load.py src/ETL/load.py utils/db_connect.py utils/data_cleaner.py utils/ddl_actions.py config\
+            -x ".github/workflows/deploy_extract_transform.yml" \
+            -x "main.py" \
+            -x "src/ETL/!(load.py)" \
+            -x "staging/**" \
+            -x "utils/!(db_connect.py|ddl_actions.py)"
+
+      # 6️⃣ Upload Load Lambda zip to S3
+      - name: Upload Load Lambda zip to S3
+        run: |
+          aws s3 cp load_function.zip s3://skycast-weather-report/zip_load_lambda/load_function.zip
+
+      # 7️⃣ Update Load Lambda code
+      - name: Update Load Lambda code
+        run: |
+          aws lambda update-function-code \
+            --function-name skycast_load_pipeline \
+            --s3-bucket skycast-weather-report \
+            --s3-key zip_load_lambda/load_function.zip
+
+      # 8️⃣ Wait for Lambda update to finish
+      - name: Wait for Load Lambda update to finish
+        run: |
+          for i in {1..10}; do
+            STATUS=$(aws lambda get-function-configuration --function-name skycast_load_pipeline --query 'LastUpdateStatus' --output text)
+            echo "Load Lambda update status: $STATUS"
+            if [ "$STATUS" = "Successful" ]; then
+              break
+            fi
+            sleep 10
+          done
+
+      # 9️⃣ Update Load Lambda configuration (VPC, env vars if needed)
+      - name: Update Lambda configuration
+        run: |
+          aws lambda update-function-configuration \
+            --function-name skycast_pipeline \
+            --vpc-config SubnetIds=subnet-0c92adc5d46412cb8,subnet-0c2043de6bf9ff9e5,subnet-014c7024b338e99cc,SecurityGroupIds=sg-0e81361efce8250bf \
+      
