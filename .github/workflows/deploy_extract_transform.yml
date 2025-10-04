@@ -51,7 +51,7 @@ jobs:
           zip -r ../extract_transform_function.zip .
           cd ..
           # Add your project code
-          zip -g extract_transform_function.zip lambda_extract_transform.py src config utils staging \
+          zip -r extract_transform_function.zip lambda_extract_transform.py src config utils staging \
             -x ".github/workflows/deploy_load.yml" \
             -x "src/ETL/load.py" \
             -x "utils/db_connect.py" \
