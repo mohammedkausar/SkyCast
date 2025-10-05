@@ -26,7 +26,7 @@ def run_pipeline(config):
 
         #Update the max date value of that particular fetch in JSON
         s3 = S3Ops(config)
-        key =config["S3"]["KEYS"][3]
+        key =config["S3"]["SKYCAST-BUCKET"]["KEYS"][3]
         last_cdc = {"last_cdc": cdc}
         s3.put_to_s3_object(key,last_cdc,'json')
     except Exception as e:

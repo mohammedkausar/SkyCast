@@ -68,7 +68,7 @@ jobs:
       - name: Update Load Lambda code
         run: |
           aws lambda update-function-code \
-            --function-name skycast_load_pipeline \
+            --function-name skycast_pipeline \
             --s3-bucket skycast-weather-report \
             --s3-key zip_load_lambda/load_function.zip
 
@@ -76,7 +76,7 @@ jobs:
       - name: Wait for Load Lambda update to finish
         run: |
           for i in {1..10}; do
-            STATUS=$(aws lambda get-function-configuration --function-name skycast_load_pipeline --query 'LastUpdateStatus' --output text)
+            STATUS=$(aws lambda get-function-configuration --function-name skycast_pipeline --query 'LastUpdateStatus' --output text)
             echo "Load Lambda update status: $STATUS"
             if [ "$STATUS" = "Successful" ]; then
               break
