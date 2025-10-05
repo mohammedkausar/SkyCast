@@ -5,7 +5,7 @@ import io
 
 class S3Ops:
     def __init__(self,s3_config):
-        self.s3_bucket_name = s3_config["S3"]["SKYCAST_BUCKET"]["skycast-weather-report"]
+        self.s3_bucket_name = s3_config["S3"]["SKYCAST_BUCKET"]["NAME"]
         self.s3 = boto3.client("s3")
     def get_s3_object(self,key):
         try:
