@@ -52,12 +52,10 @@ jobs:
           zip -r ../load_function.zip .
           cd ..
           # Add only load-related code
-          zip -r load_function.zip lambda_load.py src/ETL/load.py utils/db_connect.py utils/data_cleaner.py utils/ddl_actions.py config\
+          zip -r load_function.zip lambda_load.py src/ETL/load.py utils/db_connect.py utils/data_cleaner.py utils/ddl_actions.py utils/s3_ops.py config \
             -x ".github/workflows/deploy_extract_transform.yml" \
             -x "main.py" \
-            -x "src/ETL/!(load.py)" \
             -x "staging/**" \
-            -x "utils/!(db_connect.py|ddl_actions.py)"
 
       # 6️⃣ Upload Load Lambda zip to S3
       - name: Upload Load Lambda zip to S3
