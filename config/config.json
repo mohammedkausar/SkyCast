@@ -16,7 +16,9 @@
             "KEYS": [
                 "reference/dim_city.parquet",
                 "staging/raw_weather_data.parquet",
-                "staging/weather_data.parquet"
+                "staging/weather_data.parquet",
+                "cdc.json"
+
             ]
         }
     },
