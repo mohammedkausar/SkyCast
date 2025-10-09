@@ -11,6 +11,7 @@ on:
       - "utils/db_connect.py"
       - "utils/ddl_actions.py"
       - ".github/workflows/deploy_load.yml"
+      - "./"
 
 permissions:
   id-token: write
