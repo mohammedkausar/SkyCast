@@ -44,14 +44,17 @@ class LoadCities:
                 # buffer = io.StringIO()
                 # data_to_load.to_csv(buffer, index=False, header=False , na_rep='\\N')
                 # buffer.seek(0)
-                with psycopg2.connect(**self.cfg) as conn:
-                    with conn.cursor() as cur:
-                        tuples = [tuple(x) for x in data_to_load.to_numpy()]
-                        cols = ','.join(data_to_load.columns)
-                        query = f"INSERT INTO {self.raw_table} ({cols}) VALUES %s"
-                        execute_values(cur, query, tuples)
-                        print("data loaded to db successfully!")
-                        # cur.copy_from(buffer, table=self.raw_table, sep=",", columns=cols, null='\\N')
+                try:
+                    with psycopg2.connect(**self.cfg) as conn:
+                        with conn.cursor() as cur:
+                            tuples = [tuple(x) for x in data_to_load.to_numpy()]
+                            cols = ','.join(data_to_load.columns)
+                            query = f"INSERT INTO {self.raw_table} ({cols}) VALUES %s"
+                            execute_values(cur, query, tuples)
+                            print("data loaded to db successfully!")
+                            # cur.copy_from(buffer, table=self.raw_table, sep=",", columns=cols, null='\\N')
+                except Exception as e:
+                    print(f"Error while establishing conn: {str(e)}")
             else:
                 print("No data to load")
         except Exception as e:
