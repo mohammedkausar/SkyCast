@@ -50,6 +50,8 @@ class LoadCities:
                         query = f"INSERT INTO {self.raw_table} ({cols}) VALUES %s"
                         execute_values(cur, query, tuples)
                         # cur.copy_from(buffer, table=self.raw_table, sep=",", columns=cols, null='\\N')
+            else:
+                print("No data to load")
         except Exception as e:
             print(f"Error while loading data to raw table: {str(e)}")
             raise e
