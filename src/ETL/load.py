@@ -49,7 +49,9 @@ class LoadCities:
                         with conn.cursor() as cur:
                             tuples = [tuple(x) for x in data_to_load.to_numpy()]
                             cols = ','.join(data_to_load.columns)
-                            query = f"INSERT INTO {self.raw_table} ({cols}) VALUES %s"
+                            update_cols = [c for c in data_to_load.columns if c != 'id']
+                            set_excluded = ", ".join(f"{c}=EXCLUDED.{c}" for c in update_cols)
+                            query = f"INSERT INTO {self.raw_table} ({cols}) VALUES %s ON CONFLICT (id) DO UPDATE SET {set_excluded}"
                             execute_values(cur, query, tuples)
                             print("data loaded to db successfully!")
                             # cur.copy_from(buffer, table=self.raw_table, sep=",", columns=cols, null='\\N')
