@@ -24,8 +24,6 @@ def run_pipeline(config):
         print(f"Error while fetching cdc: {str(e)}")
 
 
-if __name__ == "__main__":
-    run_pipeline(file_for_lambda)
 def lambda_handler(event, context):
     try:
         run_pipeline(file_for_lambda)

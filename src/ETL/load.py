@@ -38,7 +38,6 @@ class LoadCities:
         try:
             self.cdc = cdc
             data_to_load = self._fetch_raw_data_from_parquet()
-            print(data_to_load.head())
             if data_to_load is not None and not data_to_load.empty:
                 # cols = list(data_to_load.columns)
                 # buffer = io.StringIO()
@@ -49,9 +48,15 @@ class LoadCities:
                         with conn.cursor() as cur:
                             tuples = [tuple(x) for x in data_to_load.to_numpy()]
                             cols = ','.join(data_to_load.columns)
-                            update_cols = [c for c in data_to_load.columns if c != 'id']
-                            set_excluded = ", ".join(f"{c}=EXCLUDED.{c}" for c in update_cols)
-                            query = f"INSERT INTO {self.raw_table} ({cols}) VALUES %s ON CONFLICT (id) DO UPDATE SET {set_excluded}"
+                            # update_cols = [c for c in data_to_load.columns if c != 'id']
+                            # set_excluded = ", ".join(f"{c}=EXCLUDED.{c}" for c in update_cols)
+                            # ON
+                            # CONFLICT(id)
+                            # DO
+                            # UPDATE
+                            # SET
+                            # {set_excluded}
+                            query = f"INSERT INTO {self.raw_table} ({cols}) VALUES %s"
                             execute_values(cur, query, tuples)
                             print("data loaded to db successfully!")
                             # cur.copy_from(buffer, table=self.raw_table, sep=",", columns=cols, null='\\N')
