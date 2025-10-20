@@ -21,7 +21,6 @@ class ExtractCities:
         self.api_v = config["URL_VERSION"]["WEATHER_V"]
         self.MAX_TRIES = config["SLEEP"]["MAX_TRIES"]
         self.RETRY_DELAY = config["SLEEP"]["RETRY_DELAY"]
-        # self.selected_cities = config["TOP_CITIES"]
         self.bucket_name = config["S3"]["SKYCAST-BUCKET"]["NAME"]
         self.key_name = config["S3"]["SKYCAST-BUCKET"]["KEYS"][0]
         self.batch_size = config["BATCH_SIZE"]
@@ -60,8 +59,6 @@ class ExtractCities:
         except Exception as e:
             print(f"Error while extraction: {str(e)}")
             raise e
-        #city_df = city_df[city_df["name"].str.lower().fillna("").isin(map(str.lower,self.selected_cities))]
-
 
 
 

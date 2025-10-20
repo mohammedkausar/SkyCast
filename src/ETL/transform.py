@@ -6,31 +6,41 @@ from utils.convert_dtype import DtypeConversion
 
 
 class TransformCities:
-    def __init__(self,config):
+    """
+    Handles transformation of city data — fetch, flatten, and optimize types.
+    """
+
+    def __init__(self, config):
         self.bucket_name = config["S3"]["SKYCAST-BUCKET"]["NAME"]
         self.bucket_key = config["S3"]["SKYCAST-BUCKET"]["KEYS"][1]
         self.schema_type = config["COLUMNS"]["FLATTENED_COLS"]
 
-    #private method to fetch the data from s3 bucket
+    ''' 
+    Fetch raw staged data from S3
+    '''
     def _fetch_staged_data(self):
         try:
-            s3= boto3.client("s3")
-            staged_data = s3.get_object(Bucket =self.bucket_name,Key=self.bucket_key)
+            s3 = boto3.client("s3")
+            staged_data = s3.get_object(Bucket=self.bucket_name, Key=self.bucket_key)
             staged_df = pd.read_parquet(io.BytesIO(staged_data["Body"].read()))
-            return  staged_df
+            return staged_df
         except Exception as e:
-            print(f"Error in fetchin requested data {str(e)}")
+            print(f"Error fetching staged data: {str(e)}")
 
-    #private method to flatten the nested data from data frame
+    '''
+    Flatten nested JSON-like columns in DataFrame
+    '''
     @staticmethod
-    def _flatten_data_frame(df: pd.DataFrame)->pd.DataFrame:
+    def _flatten_data_frame(df: pd.DataFrame) -> pd.DataFrame:
         try:
             print("Flattening started")
             df_json = json.loads(df.to_json(orient='records'))
-            normalise_df= pd.json_normalize(df_json)
+            normalise_df = pd.json_normalize(df_json)
             normalise_df.columns = normalise_df.columns.str.replace('.', '_')
 
-            #Loop through the normalised dataframe columns and flatten nested lists
+            '''
+            Expand list-type columns into separate rows/columns
+            '''
             for col in normalise_df.columns:
                 if normalise_df[col].apply(lambda x: isinstance(x, list)).any():
                     normalise_df = normalise_df.explode(col, ignore_index=True)
@@ -41,14 +51,15 @@ class TransformCities:
         except Exception as e:
             print(f"Unable to flatten data: {str(e)}")
 
-
-    #wrapper method to fetch and flatten the raw staged data
+    '''
+    Orchestrate full transformation — fetch, flatten, and convert types
+    '''
     def transform_data(self):
         try:
             data_to_transform = self._fetch_staged_data()
             transformed_data = self._flatten_data_frame(data_to_transform)
             convert_type = DtypeConversion()
-            optimised_type_data = convert_type.type_convert(transformed_data,self.schema_type)
+            optimised_type_data = convert_type.type_convert(transformed_data, self.schema_type)
             return optimised_type_data
         except Exception as e:
             print(f"Unable to transform data: {str(e)}")

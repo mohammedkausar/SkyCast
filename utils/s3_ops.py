@@ -4,21 +4,33 @@ import io
 
 
 class S3Ops:
-    def __init__(self,s3_config):
+    """
+    Handles S3 operations like fetching and uploading objects.
+    """
+
+    def __init__(self, s3_config):
+        """
+        Initialize S3 client and bucket name from config
+        """
         self.s3_bucket_name = s3_config["S3"]["SKYCAST-BUCKET"]["NAME"]
         self.s3 = boto3.client("s3")
-    def get_s3_object(self,key):
+
+    def get_s3_object(self, key):
+        """
+        Fetch an object from S3 by key
+        """
         try:
-            obj = self.s3.get_object(Bucket=self.s3_bucket_name,Key=key)
+            obj = self.s3.get_object(Bucket=self.s3_bucket_name, Key=key)
             return obj
         except self.s3.exceptions.NoSuchKey as e:
             print(f"Error while fetching from s3 bucket: {str(e)}")
             raise e
 
     def put_to_s3_object(self, key, obj, file_type='json'):
+        """
+        Upload an object to S3; supports json, csv, and parquet formats
+        """
         try:
-
-
             if file_type == 'json':
                 body = json.dumps(obj)
                 content_type = "application/json"
