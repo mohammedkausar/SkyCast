@@ -32,14 +32,14 @@ flow for weather analytics.
     raw_weather - De-normalised table with raw data 
 
 ### Data modelled tables - *STAR SCHEMA*
-    | Fact tables      | Dimension Tables                                     |
-    |---------------   |------------------------------------------------------|
-    | Cloud            | AWS Lambda, S3, RDS, EventBridge                     |
-    | Database         | PostgreSQL                                           |
-    | Language         | Python 3.13                                          |
-    | Packages         | `pandas`, `boto3`, `requests`, `psycopg2`, `pyarrow` |
-    | CI/CD            | GitHub Actions                                       |
 
+#### Fact Tables
+        fact_weather - quantitative metrics from raw_weather for analysis purpose
+
+#### Dimension Tables
+        dim_location
+        dim_weather
+                - descriptive metrics from raw_weather
 ---
 
 ## **🧩 Architecture Diagram**
@@ -159,57 +159,6 @@ skycast/
 - Include S3 object versioning for data recovery.
 - Integrate AWS Glue for schema cataloging.
 - Extend API coverage for multiple weather parameters.
-
----
-## TABLE SCHEMA - For reference
-
-```
-create table dim_location(
-	location_id serial not null primary key,
-	latitude double precision,
-	longitude double precision,
-	country varchar(3),
-	sunrise timestamp with time zone,
-	sunset timestamp with time zone,
-	city varchar(163)
-)
-
-create table dim_weather(
-	weather_dim_id serial primary key not null,
-	description text,
-	main text
-)
-
-create table fact_weather(
-	fact_weather_id serial primary key,
-	weather_dim_id int not null,
-	location_id int not null,
-	feels_like double precision,
-	ground_level bigint,
-	humidity bigint,
-	pressure bigint,
-	sea_level bigint,
-	temperature double precision,
-	max_temperature double precision,
-	min_temperature double precision,
-	one_hour_rain double precision,
-	wind_speed double precision,
-	wind_degree bigint,
-	wind_gust double precision,
-	clouds bigint,
-	visibility bigint,
-	fetched_at timestamp without time zone,
-	data_time timestamp without time zone,
-	foreign key(time_id) references dim_time(time_id),
-	foreign key(location_id) references dim_location(location_id),
-	foreign key(weather_dim_id) references dim_weather(weather_dim_id)
-);
-
-COMMENT ON COLUMN fact_weather.clouds IS 'unit in percentage';
-COMMENT ON COLUMN fact_weather.visibility IS 'Visibility, meter. The maximum value of the visibility is 10 km';
-COMMENT ON COLUMN fact_weather.one_hour_rain IS 'Precipitation, mm/h';
-
-```
 
 ---
 
