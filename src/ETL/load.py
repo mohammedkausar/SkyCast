@@ -16,6 +16,7 @@ class LoadCities:
         self.cdc = None
         self.schema = config["COLUMNS"]["TO_SQL_COLUMNS"]
         self.raw_table = config["TABLES"]["WEATHER_RAW"]
+        self.sp_star_schema_procedure = config["PROCEDURES"][0]
 
     def _fetch_raw_data_from_parquet(self):
         if self.cdc is None:
@@ -54,3 +55,11 @@ class LoadCities:
         except Exception as e:
             print(f"Error while loading data to raw table: {str(e)}")
             raise e
+
+    def load_data_in_dim_fact_tables(self):
+        try:
+            with psycopg2.connect(**self.cfg) as conn:
+                with conn.cursor() as cur:
+                    cur.execute(self.sp_star_schema_procedure)
+        except Exception as e:
+            print(f"Error while load data to dimension and fact tables: {str(e)}")

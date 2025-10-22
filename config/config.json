@@ -193,5 +193,6 @@
     "TABLES": {
         "WEATHER_RAW": "raw_weather"
     },
+    "PROCEDURES": ["sp_load_star_schema_tables"],
     "CDC": "2025-10-04 10:38:47+00:00"
 }

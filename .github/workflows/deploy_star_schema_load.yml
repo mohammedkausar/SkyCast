@@ -1,0 +1,79 @@
+name: Deploy Load Star Schema Lambda
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "lambda_star_schema_load.py"
+      - "src/ETL/load.py"
+      - "config/**"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-load:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout code
+      - name: Checkout code
+        uses: actions/checkout@4
+
+      # 2️⃣ Configure AWS credentials (GitHub OIDC)
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::874227493027:role/Github_OIDC_Connect
+          aws-region: ap-south-1
+
+      # 3️⃣ Install dependencies into a folder for Lambda
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests python-dotenv -t ./package/
+
+      # 4️⃣ Package Lambda
+      - name: Package Lambda
+        run: |
+          # Move into package folder and zip dependencies
+          cd package
+          zip -r ../lambda_package.zip .
+          cd ..
+          # Add your code files
+          zip -g lambda_package.zip lambda_star_schema_load.py src/ETL/load.py config
+
+      # 5️⃣ Upload Lambda zip to S3
+      - name: Upload Lambda zip to S3
+        run: |
+          aws s3 cp lambda_package.zip s3://skycast-weather-report/zip_load_star_schema_lambda/load_star_schema_table_function.zip
+
+      # 6️⃣ Update Lambda code from S3
+      - name: Update Lambda code
+        run: |
+          aws lambda update-function-code \
+            --function-name skycast_load_star_schema \
+            --s3-bucket skycast-weather-report \
+            --s3-key zip_load_star_schema_lambda/load_star_schema_table_function.zip
+
+      # 7️⃣ Wait for Lambda update to finish
+      - name: Wait for Lambda update
+        run: |
+          for i in {1..10}; do
+            STATUS=$(aws lambda get-function-configuration --function-name skycast_load_star_schema --query 'LastUpdateStatus' --output text)
+            echo "Lambda update status: $STATUS"
+            if [ "$STATUS" = "Successful" ]; then
+              break
+            fi
+            sleep 10
+          done
+
+      # 8️⃣ Update Lambda configuration (attach to VPC)
+      - name: Update Lambda configuration
+        run: |
+          aws lambda update-function-configuration \
+            --function-name skycast_load_star_schema \
+            --vpc-config SubnetIds=subnet-0c92adc5d46412cb8,subnet-0c2043de6bf9ff9e5,subnet-014c7024b338e99cc,SecurityGroupIds=sg-0e81361efce8250bf \
+            
