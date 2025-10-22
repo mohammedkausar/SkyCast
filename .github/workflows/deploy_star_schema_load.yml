@@ -36,19 +36,24 @@ jobs:
           pip install requests python-dotenv -t ./package/
 
       # 4️⃣ Package Lambda
-      - name: Package Lambda
+      - name: Package Load Star Schema Lambda
         run: |
-          # Move into package folder and zip dependencies
+          # 1️⃣ Include dependencies from package folder
           cd package
-          zip -r ../lambda_package.zip .
+          zip -r ../lambda_star_schema_load.zip .
           cd ..
-          # Add your code files
-          zip -g lambda_package.zip lambda_star_schema_load.py src/ETL/load.py config
+
+          # 2️⃣ Add project code and config, excluding unnecessary files
+          zip -r lambda_star_schema_load.zip lambda_star_schema_load.py src/ETL config \
+            -x ".github/workflows/deploy_load.yml" \
+            -x "src/ETL/other_file_to_exclude.py" \
+            -x "utils/unused_file.py"
+      
 
       # 5️⃣ Upload Lambda zip to S3
       - name: Upload Lambda zip to S3
         run: |
-          aws s3 cp lambda_package.zip s3://skycast-weather-report/zip_load_star_schema_lambda/load_star_schema_table_function.zip
+          aws s3 cp lambda_star_schema_load.zip s3://skycast-weather-report/zip_load_star_schema_lambda/load_star_schema_table_function.zip
 
       # 6️⃣ Update Lambda code from S3
       - name: Update Lambda code
