@@ -7,7 +7,7 @@ on:
     paths:
       - "lambda_star_schema_load.py"
       - "src/ETL/load.py"
-      - "config/**"
+      - ".github/workflows/deploy_star_schema_load.yml"
 
 permissions:
   id-token: write
