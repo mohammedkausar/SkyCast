@@ -5,14 +5,20 @@ from db_connect import get_config
 
 
 class DdlActions:
-    def __init__(self,config):
+    def __init__(self, config):
+        """
+        Initialize with table schema and raw table name from config
+        """
         self.schema = config["COLUMNS"]["TO_SQL_COLUMNS"]
         self.raw_table = config["TABLES"]["WEATHER_RAW"]
 
     def map_schema(self):
+        """
+        Generate SQL column definitions string from schema dictionary
+        """
         try:
             col_str = ""
-            for col,value in self.schema.items():
+            for col, value in self.schema.items():
                 col_str += f"{col} {value['type']} "
 
                 if not value.get('nullable', True):
@@ -26,10 +32,10 @@ class DdlActions:
         except Exception as e:
             print(f"Schema loading exception: {str(e)}")
 
-
-
-
     def create_denormalized_table(self):
+        """
+        Create denormalized raw table in Postgres if it does not exist
+        """
         try:
             cols = self.map_schema()
             create_table_query = ""
@@ -41,7 +47,6 @@ class DdlActions:
                         cur.execute(create_table_query)
         except Exception as e:
             print(f"Cannot create table: {str(e)}")
-
 
 
 base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
