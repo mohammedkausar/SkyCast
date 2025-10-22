@@ -57,11 +57,12 @@ jobs:
           # Add only load-related code
           zip -r load_function.zip lambda_load.py src/ETL/load.py utils/db_connect.py utils/data_cleaner.py utils/ddl_actions.py utils/s3_ops.py config \
             -x ".github/workflows/deploy_extract_transform.yml" \
+            -x ".github/workflows/deploy_star_schema_load.yml" \
             -x "main.py" \
             -x "staging/**" \
 
       # 6️⃣ Upload Load Lambda zip to S3
-      - name: Upload Load Star Schema Lambda zip to S3
+      - name: Upload Load Lambda zip to S3
         run: |
           aws s3 cp load_function.zip s3://skycast-weather-report/zip_load_lambda/load_function.zip
 

@@ -44,16 +44,17 @@ jobs:
           cd ..
 
           # 2️⃣ Add project code and config, excluding unnecessary files
-          zip -r lambda_star_schema_load.zip lambda_star_schema_load.py src/ETL config \
+          zip -r lambda_star_schema_load.zip lambda_star_schema_load.py src/ETL/load.py config \
             -x ".github/workflows/deploy_load.yml" \
-            -x "src/ETL/other_file_to_exclude.py" \
-            -x "utils/unused_file.py"
+            -x ".github/workflows/deploy_extract_transform.yml" \
+            -x "main.py" \
+            -x "staging/**" \
       
 
       # 5️⃣ Upload Lambda zip to S3
       - name: Upload Lambda zip to S3
         run: |
-          aws s3 cp lambda_star_schema_load.zip s3://skycast-weather-report/zip_load_star_schema_lambda/load_star_schema_table_function.zip
+          aws s3 cp lambda_star_schema_load.zip s3://skycast-weather-report/zip_load_star_schema_lambda/lambda_star_schema_load.zip
 
       # 6️⃣ Update Lambda code from S3
       - name: Update Lambda code
@@ -61,7 +62,7 @@ jobs:
           aws lambda update-function-code \
             --function-name skycast_load_star_schema \
             --s3-bucket skycast-weather-report \
-            --s3-key zip_load_star_schema_lambda/load_star_schema_table_function.zip
+            --s3-key zip_load_star_schema_lambda/lambda_star_schema_load.zip
 
       # 7️⃣ Wait for Lambda update to finish
       - name: Wait for Lambda update
