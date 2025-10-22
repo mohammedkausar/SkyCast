@@ -31,3 +31,7 @@ Thumbs.db
 
 # Optional: local/raw data storage
 data/
+
+# Ignore dependencies folder and Lambda packages
+package/
+*.zip
