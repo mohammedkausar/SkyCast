@@ -51,9 +51,19 @@ def lambda_handler(event, context):
     try:
         # Execute the pipeline using the loaded configuration
         run_pipeline(file_for_lambda)
-        return {"status": "success"}
+        return {
+            "status": "SUCCESS",
+            "message": "Raw data successfully loaded into raw_weather table.",
+            "next_step": "LOAD_STAR_SCHEMA"
+        }
 
     except Exception as e:
         # Log and re-raise the exception for AWS Lambda monitoring
-        print(f"Error while invoking lambda: {str(e)}")
-        raise e
+        error_message = f"Error while running raw data load: {str(e)}"
+        print(error_message)
+
+        # Step Function will treat this as a failure
+        return {
+            "status": "FAILED",
+            "error": error_message
+        }
