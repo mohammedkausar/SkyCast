@@ -14,13 +14,13 @@ permissions:
   contents: read
 
 jobs:
-  deploy-load:
+  deploy-load-star-schema:
     runs-on: ubuntu-latest
 
     steps:
       # 1️⃣ Checkout code
       - name: Checkout code
-        uses: actions/checkout@4
+        uses: actions/checkout@3
 
       # 2️⃣ Configure AWS credentials (GitHub OIDC)
       - name: Configure AWS credentials
