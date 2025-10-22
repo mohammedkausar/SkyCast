@@ -20,7 +20,7 @@ jobs:
     steps:
       # 1️⃣ Checkout code
       - name: Checkout code
-        uses: actions/checkout@3
+        uses: actions/checkout@v3
 
       # 2️⃣ Configure AWS credentials (GitHub OIDC)
       - name: Configure AWS credentials
