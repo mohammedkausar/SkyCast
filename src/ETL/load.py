@@ -63,6 +63,7 @@ class LoadCities:
         try:
             with psycopg2.connect(**self.cfg) as conn:
                 with conn.cursor() as cur:
-                    cur.execute(self.sp_star_schema_procedure)
+                    cur.execute(f"CALL {self.sp_star_schema_procedure}();")
+                    print("Stored procedure executed successfully.")
         except Exception as e:
             print(f"Error while load data to dimension and fact tables: {str(e)}")
