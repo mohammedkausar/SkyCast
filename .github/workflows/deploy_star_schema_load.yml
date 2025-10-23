@@ -44,7 +44,7 @@ jobs:
           cd ..
 
           # 2️⃣ Add project code and config, excluding unnecessary files
-          zip -r lambda_star_schema_load.zip lambda_star_schema_load.py src/ETL/load.py config \
+          zip -r lambda_star_schema_load.zip lambda_star_schema_load.py src/ETL/load.py utils/db_connect.py utils/data_cleaner.py config \
             -x ".github/workflows/deploy_load.yml" \
             -x ".github/workflows/deploy_extract_transform.yml" \
             -x "main.py" \
