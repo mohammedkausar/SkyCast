@@ -43,9 +43,10 @@ class LoadCities:
                 try:
                     with psycopg2.connect(**self.cfg) as conn:
                         with conn.cursor() as cur:
-                            tuples = [tuple(x) for x in data_to_load.to_numpy()]
                             common_cols = [col.lower() for col in data_to_load.columns if
                                            col.lower() in [k.lower() for k in self.schema.keys()]]
+                            common_col_data = data_to_load[common_cols]
+                            tuples = [tuple(x) for x in common_col_data.to_numpy()]
                             cols = ','.join(common_cols)
                             query = f"INSERT INTO {self.raw_table} ({cols}) VALUES %s"
                             execute_values(cur, query, tuples)
