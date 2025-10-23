@@ -13,7 +13,6 @@ def lambda_handler(event,context):
     try:
         print('Starting lambda: Star schema loader')
         LoadCities(file_for_lambda).load_data_in_dim_fact_tables()
-        print("Stored procedure executed successfully.")
         return {
             "status": "SUCCESS",
             "message": "Fact and dimension tables updated successfully."
