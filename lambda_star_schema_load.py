@@ -1,8 +1,6 @@
 import json
 import os
 
-from numpy import error_message
-
 from src.ETL.load import LoadCities
 
 
