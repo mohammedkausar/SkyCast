@@ -1,5 +1,7 @@
 import json
 import os
+
+import boto3
 import pandas as pd
 
 from src.ETL.load import LoadCities
@@ -48,20 +50,51 @@ def lambda_handler(event, context):
     """
     AWS Lambda handler function that triggers the load stage of the ETL pipeline.
     """
+    event_client = boto3.client('events')
     try:
         # Execute the pipeline using the loaded configuration
         run_pipeline(file_for_lambda)
-        return {
-            "status": "SUCCESS",
+        response = {
+            "status": "success",
             "message": "Raw data successfully loaded into raw_weather table.",
             "next_step": "LOAD_STAR_SCHEMA"
         }
+
+
+        event_client.put_events(
+            Entries=[
+                {
+                    "Source": "skycast_load",
+                    "DetailType": "lambda_load_status",
+                    "Detail" : json.dumps({
+                        "status" : "success",
+                        "next_step": response["next_step"]
+                    }),
+                    "EventBusName": "default"
+                }
+            ]
+        )
+        return  response
 
     except Exception as e:
         # Log and re-raise the exception for AWS Lambda monitoring
         error_message = f"Error while running raw data load: {str(e)}"
         print(error_message)
 
+
+        event_client.put_events(
+            Entries=[
+                {
+                    "Source": "skycast_load",
+                    "DetailType": "lambda_load_status",
+                    "Detail": json.dumps({
+                        "status": "failure",
+                        "error": error_message
+                    }),
+                    "EventBusName": "default"
+                }
+            ]
+        )
         # Step Function will treat this as a failure
         return {
             "status": "FAILED",
