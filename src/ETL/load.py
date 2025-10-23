@@ -14,7 +14,7 @@ class LoadCities:
         self.bucket_key = config["S3"]["SKYCAST-BUCKET"]["KEYS"][2]
         self.cfg = db_connect.get_config()
         self.cdc = None
-        self.schema = config["COLUMNS"]["TO_SQL_COLUMNS"]
+        self.schema = config["COLUMNS"]["FLATTENED_COLS"]
         self.raw_table = config["TABLES"]["WEATHER_RAW"]
         self.sp_star_schema_procedure = config["PROCEDURES"][0]
 
@@ -44,12 +44,14 @@ class LoadCities:
                     with psycopg2.connect(**self.cfg) as conn:
                         with conn.cursor() as cur:
                             tuples = [tuple(x) for x in data_to_load.to_numpy()]
-                            cols = ','.join(data_to_load.columns)
+                            common_cols = [col.lower() for col in data_to_load.columns if
+                                           col.lower() in [k.lower() for k in self.schema.keys()]]
+                            cols = ','.join(common_cols)
                             query = f"INSERT INTO {self.raw_table} ({cols}) VALUES %s"
                             execute_values(cur, query, tuples)
                             print("data loaded to db successfully!")
                 except Exception as e:
-                    print(f"Error while establishing conn: {str(e)}")
+                    print(f"Error while establishing conn / inserting records to table: {str(e)}")
             else:
                 print("No data to load")
         except Exception as e:
