@@ -11,6 +11,7 @@ on:
       - "utils/ddl_actions.py"
       - "lambda_load.py"
       - ".github/workflows/deploy_star_schema_load.yml"
+      - "README.md"
 
 permissions:
   id-token: write
