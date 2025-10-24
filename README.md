@@ -72,6 +72,7 @@ skycast/
 │
 ├── lambda_extract_transform.py # Lambda for extraction and transformation
 ├── lambda_load.py # Lambda for loading data to RDS
+├── lambda_star_schema_load.py # Lambda for loading fact and dim tables in RDS
 ├── main.py # Local testing and manual pipeline execution
 ├── requirements.txt # Python dependencies
 └── README.md # Project documentation
