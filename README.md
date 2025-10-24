@@ -43,7 +43,7 @@ flow for weather analytics.
 ---
 
 ## **🧩 Architecture Diagram**
-<img style="background-color:seagreen; padding:10px; border-radius:8px" src="assets/skycast_architecture.drawio.png" alt="SkyCast ETL Architecture Diagram" width="1000"/>
+<img style="background-color:seagreen; padding:2px; border-radius:8px" src="assets/skycast_architechture.jpg" alt="SkyCast ETL Architecture Diagram" width="1000"/>
 
 ---
 
@@ -95,6 +95,14 @@ skycast/
 - Loads data into **PostgreSQL RDS** using `psycopg2`.
 - Ensures schema consistency and handles incremental inserts.
 
+#### **3. `lambda_load_star_schema`**
+
+- Automatically triggered after a successful execution of the **`lambda_load`** function via a **Step Function**.
+- Runs a stored procedure in the **Skycast RDS** database.
+- The stored procedure loads data into **star schema tables** and updates the **`weather_cdc`** table to maintain **Change Data Capture (CDC)**.
+- Ensures **data integrity**, **incremental updates**, and **schema consistency** across fact and dimension tables.
+
+
 ---
 
 ### **Python Runtime & Layers**
@@ -113,7 +121,7 @@ skycast/
     1. **Build & Package:**  
        Zips Lambda code with dependencies.
     2. **Deploy:**  
-       Uploads packages to AWS Lambda (`extract_transform` and `load`) automatically.
+       Uploads packages to AWS Lambda (`extract_transform` and `load` and `load_star_schema`) automatically.
 
 ---
 
