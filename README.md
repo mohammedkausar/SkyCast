@@ -174,5 +174,5 @@ skycast/
 ## **👨‍💻 Author**
 
 **Mohammed Kawuser**  
-*Data Engineer | Former Front-End Developer | Python | AWS & Cloud Data Pipelines*
+*Data Engineer | Front-End Developer | Python | Postgres SQL | AWS & Cloud Data Pipelines*
 
