@@ -1,4 +1,4 @@
-# 🌤️ **SkyCast – Serverless Weather Automation Pipeline**
+# **SkyCast – Serverless Weather Automation Pipeline**
 
 ## **Overview**
 
@@ -50,12 +50,13 @@ dim_weather - descriptive attributes extracted from raw data
 
 ---
 
-## **🧩 Architecture Diagram**
+## **Architecture Diagram**
 <img src="assets/skycast_architechture.jpg" alt="SkyCast ETL Architecture Diagram" width="1000"/>
 
 ---
 
-## **⚙️ Project Structure**
+## **Project Structure**
+- 
 skycast/
 │
 ├── config/
@@ -82,10 +83,10 @@ skycast/
 ├── requirements.txt # Python dependencies
 └── README.md
 
-
+-
 ---
 
-## **🚀 AWS Lambda Deployment & Dependencies**
+## **AWS Lambda Deployment & Dependencies**
 
 ### **Lambda Functions**
 
@@ -134,7 +135,7 @@ Two GitHub Actions are executed on every `main` branch push:
 
 ---
 
-## **🔐 Environment Variables**
+## **Environment Variables**
 
 | Variable Name          | Description                         |
 |------------------------|-------------------------------------|
@@ -147,7 +148,7 @@ Two GitHub Actions are executed on every `main` branch push:
 
 ---
 
-## **🧠 Key DevOps Features**
+## **Key DevOps Features**
 
 - **Event-Driven Architecture** using S3, EventBridge, and Step Functions  
 - **Zero-server operations** powered by AWS Lambda  
@@ -158,7 +159,7 @@ Two GitHub Actions are executed on every `main` branch push:
 
 ---
 
-## **🧰 Technologies Used**
+## **Technologies Used**
 
 | Category      | Tools/Services                                       |
 |---------------|------------------------------------------------------|
@@ -171,7 +172,7 @@ Two GitHub Actions are executed on every `main` branch push:
 
 ---
 
-## **📆 Future Enhancements**
+## **Future Enhancements**
 
 - CloudWatch dashboards & alarms for observability  
 - S3 versioning & lifecycle policies  
@@ -181,7 +182,7 @@ Two GitHub Actions are executed on every `main` branch push:
 
 ---
 
-## **👨‍💻 Author**
+## **uthor**
 
 **Mohammed Kawuser**  
 *Cloud & DevOps Engineer | Python | PostgreSQL | AWS | Serverless Architectures | CI/CD Automation*
