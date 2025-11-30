@@ -56,7 +56,7 @@ dim_weather - descriptive attributes extracted from raw data
 ---
 
 ## **Project Structure**
-- 
+```
 skycast/
 │
 ├── config/
@@ -83,7 +83,7 @@ skycast/
 ├── requirements.txt # Python dependencies
 └── README.md
 
--
+```
 ---
 
 ## **AWS Lambda Deployment & Dependencies**
