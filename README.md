@@ -185,4 +185,4 @@ Two GitHub Actions are executed on every `main` branch push:
 ## **uthor**
 
 **Mohammed Kawuser**  
-*Cloud & DevOps Engineer | Python | PostgreSQL | AWS | Serverless Architectures | CI/CD Automation*
+*Software Engineer | Python | PostgreSQL | AWS | Serverless Architectures | CI/CD Automation*
